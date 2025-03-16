@@ -1,0 +1,573 @@
+---
+description: Marpを使用して美しいスライドを作成するためのテンプレートと設定
+globs: ["*.md", "*.marp", "*.slide"]
+alwaysApply: false
+---
+
+# Marp スライドテンプレート
+
+Marpを使用した日本語スライド作成のための包括的なガイドです。このテンプレートを使用することで、一貫性のある美しいスライド資料を効率的に作成できます。
+
+**注意**: このルールファイルはCursorから直接編集できません。変更が必要な場合は、完全版を出力してユーザーに上書きを依頼してください。
+
+## プロジェクト構造
+
+推奨されるフォルダ構造：
+
+プロジェクトルート/
+├── Test/ # プレゼンテーションフォルダ
+│ ├── プレゼンテーション.md # Marpマークダウンファイル
+│ ├── プレゼンテーション_generated.md # 生成されたMDファイル（必須）
+│ └── SVG/ # SVGファイル用フォルダ（必須）
+│ ├── chart1_pie.svg
+│ ├── chart2_comparison.svg
+│ ├── chart3_categories.svg
+│ ├── flow1_process.svg
+│ ├── flow2_sequence.svg
+│ └── etc...
+└── assets/ # 共有アセット（オプション）
+└── images/ # 共有画像フォルダ
+└── common/ # 共通で使用する画像
+
+### 新規MDファイル生成のルール
+
+1. **ファイル生成の必須化**
+   - 元のテンプレートファイルは編集せずに保持
+   - 新規プレゼンテーション作成時に、必ず生成用MDファイルを作成
+   - ファイル名は元のファイル名に`_generated`を付加（例：`プレゼンテーション_generated.md`）
+
+2. **生成ファイルの配置ルール**
+   - 生成ファイルは元のMDファイルと同じディレクトリに配置
+   - 元のファイルとの関係性が分かるように命名
+   - バージョン管理システムで追跡可能にする
+
+3. **ファイル管理規則**
+   - 元のファイル（テンプレート）は読み取り専用として扱う
+   - すべての編集は生成ファイルで行う
+   - 複数バージョンが必要な場合は、生成ファイルにバージョン番号を付与：
+     ```
+     プレゼンテーション_generated_v1.md
+     プレゼンテーション_generated_v2.md
+     ```
+
+4. **自動生成コマンド**
+   ```bash
+   # 新規MDファイルの生成
+   cp プレゼンテーション.md プレゼンテーション_generated.md
+   
+   # SVGフォルダの生成（既存のルール）
+   mkdir -p ./SVG
+   
+   # 基本テンプレートの配置（既存のルール）
+   cp ./templates/svg_templates/* ./SVG/
+   ```
+
+### SVGフォルダの自動生成とルール
+
+1. **フォルダ作成の必須化**
+   - 新規プレゼンテーション作成時に、必ずSVGフォルダを作成する
+   - フォルダ名は必ず`SVG`（大文字）とする
+   - プレゼンテーションファイル（.md）と同じ階層に作成する
+
+2. **SVGファイルの配置ルール**
+   - すべてのグラフ、フロー図、ダイアグラムは必ずSVGフォルダ内に配置する
+   - 画像形式は必ずSVGを使用（PNG/JPGは非推奨）
+   - 他のフォルダにSVGファイルを配置することは禁止
+
+3. **ファイル命名規則**
+   - プレフィックスによる分類を必須とする：
+     - `chart_`: グラフ類
+     - `flow_`: フロー図、シーケンス図
+     - `diagram_`: その他のダイアグラム
+     - `icon_`: アイコン類
+   - 具体例：
+     ```
+     chart_sales_2024.svg
+     flow_user_registration.svg
+     diagram_system_architecture.svg
+     icon_warning.svg
+     ```
+
+4. **バージョン管理**
+   - SVGファイルの変更履歴を管理する
+   - 更新時は新しいバージョン番号を付与：
+     ```
+     chart_sales_2024_v1.svg
+     chart_sales_2024_v2.svg
+     ```
+
+5. **自動生成コマンド**
+   ```bash
+   # SVGフォルダの自動生成
+   mkdir -p ./SVG
+   
+   # 基本テンプレートの配置
+   cp ./templates/svg_templates/* ./SVG/
+   ```
+
+## 基本設定
+
+以下のfrontmatterをスライドファイルの先頭に設定します：
+
+```md
+---
+marp: true
+theme: default
+paginate: true
+size: 16:9
+math: katex
+header: ""
+footer: "フッターテキスト"
+style: |
+  /* フォント設定 */
+  section {
+    font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+    font-size: 22px;
+    padding: 30px 40px;
+    line-height: 1.4;
+  }
+  
+  /* 見出しのスタイル */
+  h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 0.4em;
+  }
+  
+  h2 {
+    font-size: 1.4em;
+    color: #3a6ea5;
+    margin-top: 0.6em;
+    margin-bottom: 0.4em;
+  }
+  
+  h3 {
+    font-size: 1.2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
+  }
+  
+  /* リストとテキスト */
+  p, li {
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    margin: 0.2em 0;
+  }
+  
+  ul, ol {
+    margin: 0.3em 0;
+    padding-left: 1.5em;
+  }
+  
+  /* 表のスタイル */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    margin: 0.5em 0;
+  }
+  
+  th, td {
+    padding: 6px;
+    border: 1px solid #ddd;
+  }
+  
+  /* 2カラムレイアウト */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  /* 画像とキャプション */
+  .caption {
+    font-size: 14px;
+    color: #7f8c8d;
+    text-align: center;
+    margin-top: -10px;
+  }
+  
+  /* 画像中央揃え */
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  /* 便利なクラス */
+  .important {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  
+  .info-box {
+    border: 2px solid #3a6ea5;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    background-color: rgba(58, 110, 165, 0.05);
+  }
+  
+  .note {
+    font-size: 0.8em;
+    color: #777;
+  }
+  
+  /* モバイル対応 */
+  @media (max-width: 480px) {
+    section {
+      font-size: 16px;
+      padding: 15px;
+    }
+    
+    h1 { font-size: 1.6em; }
+    h2 { font-size: 1.3em; }
+    
+    .columns {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+  }
+---
+```
+
+## SVG画像の扱い方
+
+### SVGファイルの参照方法
+
+```md
+<!-- 基本的な参照方法（必須） -->
+![(SVG/chart_sales_2024.svg)
+<p class="caption">グラフの説明文をここに記載</p>
+
+<!-- 高さ指定による参照（推奨） -->
+![height:400px](SVG/flow_process.svg)
+<p class="caption">高さを4</p>
+
+<!-- 2カラムレイアウトでの参照 -->
+<div class="columns">
+  <div>
+    ## 左側コンテンツ
+ - 項目2
+  </div>
+  <div>
+    ![width:100%](SVG/flow_process.svg)
+    <p class="caption">フロー図の説明</p>
+  </div>
+</div>
+
+<!-- SVGとリスト/表の効果的な配置 -->
+<div class="columns">
+  <div>
+    <h3 style="font-size: 1.0em;">リストタイトル</h3>
+    <div style="font-size: 0.85em;">
+    - 項目1：★★★★★
+    - 項目2：★★★★☆
+    - 項目3：★★★☆☆
+    </div>
+    
+    <h3 style="font-size: 1.0em; margin-top: 10px;">表タイトル</h3>
+    <table style="font-size: 0.85em;">
+    <tr><th>項目</th><th>数値</th></tr>
+    <tr><td>A</td><td>100</td></tr>
+    </table>
+  </div>
+  <div>
+    ![height:380px](SVG/chart_example.svg)
+    <p class="caption">グラフの説明</p>
+  </div>
+</div>
+```
+
+### SVGファイル作成時の注意点
+
+1. **必須要件**
+   - すべてのSVGファイルは`SVG/`フォルダ内に配置
+   - 適切なプレフィックス（`chart_`, `flow_`, `diagram_`, `icon_`）を使用
+   - ファイル名は英数字とアンダースコアのみを使用
+
+2. **推奨サイズ**
+   - グラフ類: 800x600px
+   - フロー図: 1000x600px
+   - アイコン: 64x64px or 128x128px
+   - ダイアグラム: 1200x800px
+
+3. **最適化**
+   - SVGファイルは必ずSVGO等のツールで最適化
+   - 不要なメタデータを削除
+   - パスを最適化
+   - ファイルサイズを最小化
+
+4. **アクセシビリティ**
+   - 必ず`title`要素を含める
+   - 必要に応じて`desc`要素を追加
+   - 重要な要素には`aria-label`を設定
+
+5. **テキストボックスとレイアウト**
+   - テキストを含むボックスは十分な高さを確保する（テキスト行数 × 20px + 40px の余裕を持たせる）
+   - 最下部のテキスト行がボックスの下端から最低10px上に位置するよう配慮
+   - 複数のテキストブロックを持つ要素間は少なくとも30px以上の間隔を確保
+   - 下方向に要素を連結する場合は、連結先より20px以上上部に配置
+
+6. **フロー要素の配置**
+   - フローチャートの各要素は他の要素と重ならないよう十分な余白を確保
+   - 矢印が要素の中心に到達するよう計算
+   - 関連する要素を結ぶ場合は点線を使用し、視覚的な区別を明確に
+
+### SVG作成用テンプレート
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- タイトルと説明（必須） -->
+  <title>グラフタイトル</title>
+  <desc>グラフの詳細な説明</desc>
+  
+  <!-- 背景 -->
+  <rect width="100%" height="100%" fill="#f8f9fa"/>
+  
+  <!-- テキストボックス用テンプレート -->
+  <!-- 
+  ・テキスト量に応じて高さを調整（行数×20px+40px）
+  ・テキスト位置はボックス上端から25px、行間は20px
+  -->
+  <rect x="100" y="100" width="240" height="100" rx="5" fill="#89b3e2" />
+  <text x="220" y="125" font-family="'Noto Sans JP', sans-serif" font-size="14" text-anchor="middle" font-weight="bold" fill="#333">タイトル</text>
+  <text x="220" y="145" font-family="'Noto Sans JP', sans-serif" font-size="12" text-anchor="middle" fill="#333">・内容1行目</text>
+  <text x="220" y="165" font-family="'Noto Sans JP', sans-serif" font-size="12" text-anchor="middle" fill="#333">・内容2行目</text>
+  <text x="220" y="185" font-family="'Noto Sans JP', sans-serif" font-size="12" text-anchor="middle" fill="#333">・内容3行目</text>
+  
+  <!-- メインコンテンツ -->
+  <g transform="translate(40, 40)">
+    <!-- SVGコンテンツをここに配置 -->
+  </g>
+  
+  <!-- アクセシビリティ用のラベル -->
+  <g role="group" aria-label="データグループ">
+    <!-- データ要素をここに配置 -->
+  </g>
+</svg>
+```
+
+## よく使うレイアウト
+
+### タイトルスライド
+
+```md
+<!-- _class: lead -->
+# プレゼンテーションタイトル
+## サブタイトル
+
+発表者名 | 所属 | 日付
+```
+
+### 2カラムレイアウト
+
+```md
+<div class="columns">
+  <div>
+
+## 左カラム
+- 項目1
+- 項目2
+- 項目3
+
+  </div>
+  <div>
+
+## 右カラム
+- 項目A
+- 項目B
+- 項目C
+
+  </div>
+</div>
+```
+
+### 情報ボックス
+
+```mdinfo-box">
+重要な情報やポイントをここに記載します。
+</div>
+```
+
+### インラインスタイルでのテキストサイズ調整
+
+```md
+<!-- 見出しのサイズ調整 -->
+<h3 style="font-sコンパクトな見出し</h3>
+
+<!-- テキストブロックのサイズ調整 -->
+<div style="font-size: 0.85em;">
+- 項目1
+- 項目2
+- 項目3
+</div>
+
+<!-- 表のサイズ調整 -->
+<table style="font-size: 0.85em;">
+<tr>
+  <th>項目</th><th>値</th>
+</tr>
+<tr>
+  <td>A</td><td>100</td>
+</tr>
+</table>
+```
+
+### コンテンツが多い場合の分割
+
+情報量が多い場合は、複数のスライドす：
+
+```md
+## セクションタイトル
+
+### サブセクション (半年～1年)
+
+<div class="columns">
+<div>
+  ※前半の内容
+</div>
+<div>
+  ※前半の内容
+</div>
+</div>
+
+---
+
+## セクションタイトル (続き)
+
+### サブセクション (半年～1年) - 続き
+
+<div class="columns">
+<div>
+  ※後半の内容
+</div>
+<div>
+  ※後半の内容
+</div>
+</div>
+```
+
+## ベストプラクティス
+
+### コンテンツ量の管理
+
+- 1スライドあたりの項目数
+  - 箇条書きは5〜7項目以内
+  - 1項目は1〜2行以内
+  - 表は4〜5行程度
+  - コードブロックは10行以内
+
+### 画像の最適化
+
+- SVGファイルは最適化ツールで圧縮
+- アスペクト比を維持
+- 適切なalt属性を設定
+- 画像サイズは`height`または`width`属性で明示的に指定
+  - 特にフローチャートや複雑な図は`height`指定が効果的
+  - 例: `![height:280px](SVG/flow_chart.svg)`
+
+### フォントサイズの調整
+
+- 重要度に応じたテキストサイズを使い分ける
+- スライドが見切れる場合はテキストサイズを縮小
+- 階層構造を表現するためのサイズ変更
+
+```md
+<span style="font-size: 0.8em;">小さめのテキスト</span>
+<span style="font-size: 1.2em;">大きめのテキスト</span>
+```
+
+### レイアウトの最適化
+
+- 情報の関連性に応じて2カラムレイアウトを活用
+- グラフと説明テキストの配置は以下のパターンが効果的:
+  - グラフを右側、説明を左側に配置
+  - 説明テキストはフォントサイズを0.85em程度に縮小
+  - 表を使用する場合はHTMLテーブルとスタイル属性を活用
+
+## トラブルシューティング
+
+### レイアウト問題の解決
+
+1. **テキストがフッターと重なる場合**
+   - コンテンツ量を減らす
+   - テキストサイズを小さくする: `<div style="font-size: 0.85em;">`
+   - 2スライドに分割する
+   - グラフサイズを調整する: `![height:280px](SVG/chart.svg)`
+
+2. **2カラムレイアウトでのバランス崩れ**
+   - 左右のコンテンツ量を均等にする
+   - 片方のコラムが多い場合はフォントサイズを調整
+   - 重要な情報を上部に配置する
+
+3. **表とグラフの配置問題**
+   - 表は`<table style="font-size: 0.85em;">`でサイズ調整
+   - 列見出しは`<th>`、データ行は`<td>`で明示的に指定
+   - グラフと表の高さバランスを考慮する
+
+### SVG画像の表示問題
+
+1. **パスの問題**
+   - 相対パスが`SVG/`から始まっているか確認
+   - ファイル名が命名規則に従っているか確認
+   - プレフィックス（`chart_`, `flow_`, etc.）が正しいか確認
+
+2. **サイズの問題**
+   - 推奨サイズに従っているか確認
+   - `height`属性または`width`属性が適切に設定されているか確認
+   - viewBox属性が正しく設定されているか確認
+
+3. **最適化の問題**
+   - SVGOで最適化されているか確認
+   - 不要なメタデータが削除されているか確認
+   - ファイルサイズが適切か確認
+
+4. **アクセシビリティの問題**
+   - `title`要素が存在するか確認
+   - `desc`要素が適切に設定されているか確認
+   - `aria-label`が必要な要素に設定されているか確認
+
+## 出力コマンド
+
+### 基本コマンド
+
+```bash
+# HTML出力（開発時の確認用）
+npx @marp-team/marp-cli@latest プレゼンテーション_generated.md -o プレゼンテーション.html
+
+# PDF出力（最終成果物）
+npx @marp-team/marp-cli@latest プレゼンテーション_generated.md --pdf --allow-local-files
+
+# PowerPoint出力（編集可能版）
+npx @marp-team/marp-cli@latest プレゼンテーション_generated.md --pptx --allow-local-files
+
+# プレビューモード（リアルタイム更新）
+npx @marp-team/marp-cli@latest -w プレゼンテーション_generated.md
+```
+
+### バッチ処理用package.json
+
+```json
+{
+  "scripts": {
+    "start": "npx @marp-team/marp-cli@latest -w",
+    "build:pdf": "npx @marp-team/marp-cli@latest --pdf --allow-local-files",
+    "build:pptx": "npx @marp-team/marp-cli@latest --pptx --allow-local-files",
+    "build:html": "npx @marp-team/marp-cli@latest --html --allow-local-files"
+  }
+}
+```
+
+## 更新履歴
+
+- 2024-03-16: インラインスタイルでのテキストサイズ調整方法を追加、テーブル作成とレイアウト最適化の例を追加
+- 2024-03-16: コンテンツが多い場合の分割方法を追加、SVG参照パスを簡略化（「./SVG/」→「SVG/」）
+- 2024-03-XX: 新規MDファイル生成ルールを追加、元ファイルの保護を強化
+- 2024-03-XX: SVG画像の表示に関する推奨方法を更新、HTMLタグによるラップを避け、CSSでの制御を推奨
+- 2024-03-XX: SVG円グラフ作成ガイドラインを追加
+- 2024-03-XX: SVG画像の参照方法を統一（Vertosa.mdスタイルに準拠）
+- 2024-03-XX: SVG画像の扱いを改善、フォルダ構造を標準化
+- 2024-03-XX: トラブルシューティングセクションを追加
+- 2024-03-XX: 初版作成

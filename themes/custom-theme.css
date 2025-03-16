@@ -1,0 +1,226 @@
+/* @theme custom-theme */
+
+@import 'default';
+
+:root {
+  --color-background: #ffffff;
+  --color-foreground: #333333;
+  --color-highlight: #3a6ea5;
+  --color-dimmed: #888888;
+  --color-accent: #ff9900;
+}
+
+section {
+  /* 日本語フォントを優先 */
+  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', 'Yu Gothic', sans-serif;
+  font-size: 22px;
+  padding: 30px 40px;
+  line-height: 1.4;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* ページ番号のスタイル */
+section::after {
+  font-size: 12px;
+  color: var(--color-dimmed);
+  right: 10px;
+  bottom: 10px;
+}
+
+/* タイトルスライド用 */
+section.lead {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 60px;
+}
+
+section.lead h1 {
+  font-size: 2.2em;
+  color: var(--color-highlight);
+  margin-bottom: 0.2em;
+}
+
+section.lead h2 {
+  font-size: 1.4em;
+  color: var(--color-dimmed);
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+
+/* 見出しのスタイル */
+h1 {
+  font-size: 1.7em;
+  color: var(--color-highlight);
+  border-bottom: 2px solid var(--color-highlight);
+  padding-bottom: 0.1em;
+  margin-bottom: 0.6em;
+}
+
+h2 {
+  font-size: 1.3em;
+  color: var(--color-highlight);
+  margin-top: 0.7em;
+  margin-bottom: 0.4em;
+}
+
+h3 {
+  font-size: 1.1em;
+  color: var(--color-foreground);
+  margin-top: 0.6em;
+  margin-bottom: 0.3em;
+}
+
+/* テキストのスタイル */
+p, li {
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  margin: 0.2em 0;
+}
+
+ul, ol {
+  margin: 0.3em 0;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.2em;
+}
+
+/* コードブロック */
+code {
+  font-family: 'Source Code Pro', 'Consolas', 'Monaco', monospace;
+  font-size: 0.85em;
+  background-color: #f5f5f5;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 0.6em;
+  border-radius: 5px;
+  overflow: hidden;
+  max-height: 80%;
+  overflow-y: auto;
+  font-size: 0.85em;
+  line-height: 1.3;
+}
+
+/* テーブルのスタイル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  margin: 0.5em 0;
+}
+
+th {
+  background-color: #f0f0f0;
+  color: var(--color-highlight);
+  font-weight: bold;
+}
+
+th, td {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+}
+
+/* 引用のスタイル */
+blockquote {
+  border-left: 3px solid var(--color-highlight);
+  padding-left: 0.8em;
+  color: var(--color-dimmed);
+  font-style: italic;
+  margin: 0.5em 0;
+  font-size: 0.95em;
+}
+
+/* 2カラムレイアウト */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* 明朝体クラス */
+.mincho {
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+}
+
+/* 強調表示 */
+.highlight {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+/* 注釈 */
+.note {
+  font-size: 0.75em;
+  color: var(--color-dimmed);
+}
+
+/* 情報ボックス */
+.info-box {
+  border: 2px solid var(--color-highlight);
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  background-color: rgba(58, 110, 165, 0.05);
+  font-size: 0.95em;
+}
+
+/* キャプション */
+.caption {
+  font-size: 0.7em;
+  color: var(--color-dimmed);
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* コンテンツのオーバーフローを確認するマーカー */
+.content-overflow-marker {
+  position: absolute;
+  bottom: 80px;
+  left: 0;
+  width: 100%;
+  border-top: 1px dashed #ff0000;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* モバイル対応 */
+@media (max-width: 480px) {
+  section {
+    font-size: 16px;
+    padding: 15px 20px;
+  }
+  
+  section.lead {
+    padding: 30px;
+  }
+  
+  section.lead h1 {
+    font-size: 1.8em;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  h2 {
+    font-size: 1.2em;
+  }
+  
+  h3 {
+    font-size: 1.1em;
+  }
+  
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+} 
