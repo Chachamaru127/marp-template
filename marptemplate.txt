@@ -18,15 +18,29 @@ Marpを使用した日本語スライド作成のための包括的なガイド�
 ├── Test/ # プレゼンテーションフォルダ
 │ ├── プレゼンテーション.md # Marpマークダウンファイル
 │ ├── プレゼンテーション_generated.md # 生成されたMDファイル（必須）
+│ ├── test_presentation.md # 各種レイアウト・コンポーネント使用例
+│ ├── images/ # プレゼンテーション固有の画像フォルダ（推奨）
 │ └── SVG/ # SVGファイル用フォルダ（必須）
-│ ├── chart1_pie.svg
-│ ├── chart2_comparison.svg
-│ ├── chart3_categories.svg
-│ ├── flow1_process.svg
-│ ├── flow2_sequence.svg
+│   ├── chart1_pie.svg
+│   ├── chart2_comparison.svg
+│   ├── chart3_categories.svg
+│   ├── flow1_process.svg
+│   ├── flow2_sequence.svg
+│   └── etc...
+├── assets/ # 共有アセット（オプション）
+│ ├── images/ # 共有画像フォルダ
+│ ├── themes/ # カスタムテーマフォルダ
+│ │ ├── corporate.css
+│ │ ├── academic.css
+│ │ └── etc...
+│ └── css/ # グローバルスタイルフォルダ
+│   ├── global.css
+│   └── components.css
+├── components/ # 再利用可能なコンポーネント
+│ ├── title.md
+│ ├── two-column.md
+│ ├── info-box.md
 │ └── etc...
-└── assets/ # 共有アセット（オプション）
-└── images/ # 共有画像フォルダ
 └── common/ # 共通で使用する画像
 
 ### 新規MDファイル生成のルール
@@ -54,6 +68,8 @@ Marpを使用した日本語スライド作成のための包括的なガイド�
    ```bash
    # 新規MDファイルの生成
    cp プレゼンテーション.md プレゼンテーション_generated.md
+   # または rsync を使用した差分更新
+   rsync -av --progress --exclude='*_generated.md' プレゼンテーション.md プレゼンテーション_generated.md
    
    # SVGフォルダの生成（既存のルール）
    mkdir -p ./SVG
@@ -105,6 +121,51 @@ Marpを使用した日本語スライド作成のための包括的なガイド�
    cp ./templates/svg_templates/* ./SVG/
    ```
 
+### カスタムテーマのサポート
+
+1. **テーマの作成と管理**
+   - `assets/themes/`フォルダにカスタムテーマCSSファイルを配置
+   - 企業や用途に応じたテーマを作成（例：corporate.css, academic.css）
+   - テーマファイル名は英数字のみを使用
+
+2. **テーマの適用方法**
+   - frontmatterで`theme`プロパティを使用
+   - デフォルトテーマまたはカスタムテーマを指定
+   ```md
+   ---
+   marp: true
+   theme: corporate
+   ---
+   ```
+
+3. **テーマの構成**
+   - 各テーマは以下の要素をカスタマイズ可能
+     - フォントファミリー
+     - カラースキーム
+     - 見出しスタイル
+     - 表のスタイル
+     - 背景デザイン
+
+### コンポーネント化の推進
+
+1. **コンポーネントの作成**
+   - `components/`フォルダに再利用可能なコンポーネントを配置
+   - 各コンポーネントは独立した`.md`ファイルとして管理
+   - コンポーネントには使用例とドキュメントを含める
+
+2. **コンポーネントの使用方法**
+   - コンポーネントはインクルード構文で使用
+   ```md
+   <!-- include: components/title.md -->
+   <!-- include: components/two-column.md -->
+   ```
+
+3. **主要コンポーネント**
+   - `title.md`: タイトルスライド
+   - `two-column.md`: 2カラムレイアウト
+   - `info-box.md`: 情報ボックス
+   - `quote.md`: 引用ブロック
+
 ## 基本設定
 
 以下のfrontmatterをスライドファイルの先頭に設定します：
@@ -112,13 +173,17 @@ Marpを使用した日本語スライド作成のための包括的なガイド�
 ```md
 ---
 marp: true
-theme: default
+theme: default # または カスタムテーマ名
 paginate: true
 size: 16:9
 math: katex
 header: ""
 footer: "フッターテキスト"
+image_path: ./images/ # 画像パスの変数設定
 style: |
+  /* 外部スタイルシートのインポート */
+  @import url('assets/css/global.css');
+  
   /* フォント設定 */
   section {
     font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
@@ -237,21 +302,26 @@ style: |
 
 ```md
 <!-- 基本的な参照方法（必須） -->
-![(SVG/chart_sales_2024.svg)
+![](SVG/chart_sales_2024.svg)
 <p class="caption">グラフの説明文をここに記載</p>
 
 <!-- 高さ指定による参照（推奨） -->
-![height:400px](mdc:SVG/flow_process.svg)
-<p class="caption">高さを4</p>
+![height:400px](SVG/flow_process.svg)
+<p class="caption">高さを指定したフロー図</p>
+
+<!-- 画像パス変数を使用した参照 -->
+![width:80%]({{image_path}}dashboard.png)
+<p class="caption">画像パス変数を使用した例</p>
 
 <!-- 2カラムレイアウトでの参照 -->
 <div class="columns">
   <div>
     ## 左側コンテンツ
- - 項目2
+    - 項目1
+    - 項目2
   </div>
   <div>
-    ![width:100%](mdc:SVG/flow_process.svg)
+    ![width:100%](SVG/flow_process.svg)
     <p class="caption">フロー図の説明</p>
   </div>
 </div>
@@ -273,7 +343,7 @@ style: |
     </table>
   </div>
   <div>
-    ![height:380px](mdc:SVG/chart_example.svg)
+    ![height:380px](SVG/chart_example.svg)
     <p class="caption">グラフの説明</p>
   </div>
 </div>
@@ -291,6 +361,9 @@ style: |
    - フロー図: 1000x600px
    - アイコン: 64x64px or 128x128px
    - ダイアグラム: 1200x800px
+   - ガントチャート: 1200x400px
+   - SWOT分析図: 800x800px
+   - カスタマージャーニーマップ: 1200x500px
 
 3. **最適化**
    - SVGファイルは必ずSVGO等のツールで最適化
@@ -349,6 +422,30 @@ style: |
 </svg>
 ```
 
+### SVG拡張テンプレート集
+
+以下のテンプレートは`templates/svg_templates/`フォルダに配置してください。
+
+1. **ガントチャート**
+   - ファイル名：`template_gantt_chart.svg`
+   - サイズ：1200x400px
+   - 特徴：プロジェクトスケジュール可視化用
+
+2. **SWOT分析図**
+   - ファイル名：`template_swot_analysis.svg`
+   - サイズ：800x800px
+   - 特徴：4象限に分かれた分析図
+
+3. **カスタマージャーニーマップ**
+   - ファイル名：`template_customer_journey.svg`
+   - サイズ：1200x500px
+   - 特徴：ユーザー体験の流れを可視化
+
+4. **ロードマップ**
+   - ファイル名：`template_roadmap.svg`
+   - サイズ：1000x600px
+   - 特徴：時系列に沿った計画表示
+
 ## よく使うレイアウト
 
 ### タイトルスライド
@@ -386,7 +483,8 @@ style: |
 
 ### 情報ボックス
 
-```mdinfo-box">
+```md
+<div class="info-box">
 重要な情報やポイントをここに記載します。
 </div>
 ```
@@ -395,7 +493,7 @@ style: |
 
 ```md
 <!-- 見出しのサイズ調整 -->
-<h3 style="font-sコンパクトな見出し</h3>
+<h3 style="font-size: 1.0em;">コンパクトな見出し</h3>
 
 <!-- テキストブロックのサイズ調整 -->
 <div style="font-size: 0.85em;">
@@ -417,7 +515,7 @@ style: |
 
 ### コンテンツが多い場合の分割
 
-情報量が多い場合は、複数のスライドす：
+情報量が多い場合は、複数のスライドに分割します：
 
 ```md
 ## セクションタイトル
@@ -466,7 +564,7 @@ style: |
 - 適切なalt属性を設定
 - 画像サイズは`height`または`width`属性で明示的に指定
   - 特にフローチャートや複雑な図は`height`指定が効果的
-  - 例: `![height:280px](mdc:SVG/flow_chart.svg)`
+  - 例: `![height:280px](SVG/flow_chart.svg)`
 
 ### フォントサイズの調整
 
@@ -495,7 +593,7 @@ style: |
    - コンテンツ量を減らす
    - テキストサイズを小さくする: `<div style="font-size: 0.85em;">`
    - 2スライドに分割する
-   - グラフサイズを調整する: `![height:280px](mdc:SVG/chart.svg)`
+   - グラフサイズを調整する: `![height:280px](SVG/chart.svg)`
 
 2. **2カラムレイアウトでのバランス崩れ**
    - 左右のコンテンツ量を均等にする
@@ -529,6 +627,23 @@ style: |
    - `desc`要素が適切に設定されているか確認
    - `aria-label`が必要な要素に設定されているか確認
 
+### よくある質問（FAQ）
+
+1. **Q: スライドの背景色を変更するには？**
+   - A: frontmatterの`style`セクションで`section { background-color: #xxxxxx; }`を追加するか、カスタムテーマで設定します。
+
+2. **Q: 日本語フォントが正しく表示されない**
+   - A: frontmatterのフォント設定が適切か確認し、Noto Sans JPなどのフォントが使用可能か確認してください。
+
+3. **Q: PDFエクスポートで画像が表示されない**
+   - A: 出力コマンドに`--allow-local-files`オプションが含まれているか確認してください。
+
+4. **Q: SVG画像のテキストがぼやける**
+   - A: SVGのテキストは`<text>`要素として定義し、ビットマップに変換しないようにしてください。
+
+5. **Q: 数式が正しく表示されない**
+   - A: frontmatterで`math: katex`が設定されているか確認し、KaTeXの構文が正しいか確認してください。
+
 ## 出力コマンド
 
 ### 基本コマンド
@@ -555,13 +670,49 @@ npx @marp-team/marp-cli@latest -w プレゼンテーション_generated.md
     "start": "npx @marp-team/marp-cli@latest -w",
     "build:pdf": "npx @marp-team/marp-cli@latest --pdf --allow-local-files",
     "build:pptx": "npx @marp-team/marp-cli@latest --pptx --allow-local-files",
-    "build:html": "npx @marp-team/marp-cli@latest --html --allow-local-files"
+    "build:html": "npx @marp-team/marp-cli@latest --html --allow-local-files",
+    "generate": "rsync -av --progress --exclude='*_generated.md' ./ ./generated/"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^3.4.0",
+    "markdownlint-cli": "^0.37.0",
+    "prettier": "^3.0.0"
   }
+}
+```
+
+### リンター/フォーマッターの設定
+
+`.markdownlint.json` ファイルの例:
+
+```json
+{
+  "default": true,
+  "MD013": false,
+  "MD033": false,
+  "MD041": false
+}
+```
+
+`.prettierrc` ファイルの例:
+
+```json
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "proseWrap": "always"
 }
 ```
 
 ## 更新履歴
 
+- 2024-05-XX: カスタムテーマのサポート、コンポーネント化の推進、グローバルスタイル設定など10個の機能を追加
+- 2024-05-XX: SVG拡張テンプレート集（ガントチャート、SWOT分析図、カスタマージャーニーマップなど）を追加
+- 2024-05-XX: rsyncによる差分更新機能の追加、画像パス変数の導入、FAQセクションの追加
+- 2024-05-XX: リンター/フォーマッターの設定を追加、Marp CLI バージョンの固定
 - 2024-03-16: インラインスタイルでのテキストサイズ調整方法を追加、テーブル作成とレイアウト最適化の例を追加
 - 2024-03-16: コンテンツが多い場合の分割方法を追加、SVG参照パスを簡略化（「./SVG/」→「SVG/」）
 - 2024-03-XX: 新規MDファイル生成ルールを追加、元ファイルの保護を強化
