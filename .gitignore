@@ -23,7 +23,6 @@ yarn.lock
 *.pptx
 
 # カーソル関連
-.cursor/
 
 # その他
 .env
